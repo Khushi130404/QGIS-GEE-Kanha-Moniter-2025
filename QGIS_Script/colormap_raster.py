@@ -4,66 +4,57 @@ from qgis.core import (
     QgsColorRampShader,
     QgsSingleBandPseudoColorRenderer
 )
-from qgis.PyQt.QtGui import QColor
+from PyQt5.QtGui import QColor
 
-# ---- PATH TO YOUR COLOR MAP FILE ----
-color_map_file = r"D:/QGIS_GEE_Kanha_Moniter_2025/pseudo_color.txt"
+# -----------------------------
+# Path to your pseudo-color file
+# -----------------------------
+txt_path = r"D:/QGIS_GEE_Kanha_Moniter_2025/pseudo_color.txt"
 
-def load_color_map(file_path):
-    items = []
-    interpolation = QgsColorRampShader.Interpolated
+# -----------------------------
+# Parse TXT file
+# -----------------------------
+color_items = []
 
-    with open(file_path, 'r') as f:
-        for line in f:
-            line = line.strip()
+with open(txt_path, 'r') as f:
+    for line in f:
+        line = line.strip()
+        if not line or line.startswith("INTERPOLATION"):
+            continue  # skip header/empty lines
 
-            if not line or line.startswith("#"):
-                continue
+        parts = line.split(',')
+        if len(parts) < 5:
+            continue
 
-            if line.startswith("INTERPOLATION"):
-                if "DISCRETE" in line:
-                    interpolation = QgsColorRampShader.Discrete
-                elif "EXACT" in line:
-                    interpolation = QgsColorRampShader.Exact
-                continue
+        # Handle "inf" for upper bound
+        val_str = parts[0].strip()
+        value = float('inf') if val_str.lower() == 'inf' else float(val_str)
 
-            parts = line.split(',')
-            value = float(parts[0])
-            r, g, b, a = map(int, parts[1:5])
-            label = parts[5]
+        # RGBA
+        r, g, b, a = map(int, parts[1:5])
+        color = QColor(r, g, b, a)
 
-            items.append(
-                QgsColorRampShader.ColorRampItem(
-                    value,
-                    QColor(r, g, b, a),
-                    label
-                )
-            )
+        # Label
+        label = parts[5].strip() if len(parts) > 5 else str(value)
 
-    return items, interpolation
+        # Create ColorRampItem
+        color_items.append(QgsColorRampShader.ColorRampItem(value, color, label))
 
-
-# Load color map
-color_items, interpolation_type = load_color_map(color_map_file)
-
-# Apply to all raster layers
+# -----------------------------
+# Apply pseudo-color to all raster layers
+# -----------------------------
 for layer in QgsProject.instance().mapLayers().values():
     if layer.type() == layer.RasterLayer:
 
-        shader = QgsRasterShader()
+        raster_shader = QgsRasterShader()
         color_ramp = QgsColorRampShader()
-        color_ramp.setColorRampType(interpolation_type)
         color_ramp.setColorRampItemList(color_items)
+        color_ramp.setColorRampType(QgsColorRampShader.Discrete)  # discrete like in TXT
 
-        shader.setRasterShaderFunction(color_ramp)
+        raster_shader.setRasterShaderFunction(color_ramp)
 
-        renderer = QgsSingleBandPseudoColorRenderer(
-            layer.dataProvider(),
-            1,   # band number
-            shader
-        )
-
+        renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, raster_shader)
         layer.setRenderer(renderer)
         layer.triggerRepaint()
 
-print("✅ Color map applied to all raster layers")
+print("✅ Exact pseudo-color file applied to all raster layers")
