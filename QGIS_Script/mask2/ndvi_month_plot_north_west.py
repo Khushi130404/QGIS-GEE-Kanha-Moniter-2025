@@ -5,7 +5,7 @@ from qgis.core import QgsProject
 # ------------------------
 # GET MEMORY LAYER
 # ------------------------
-layer_name = "NDVI_2025_Table"
+layer_name = "Kanha_NW_TimeSeries_ROI"
 layer = QgsProject.instance().mapLayersByName(layer_name)[0]
 
 # ------------------------
@@ -61,7 +61,7 @@ plt.plot(existing_indices, existing_y, linestyle='-', color='green')
 plt.xticks(x_positions, full_dates, rotation=45)
 plt.xlabel("Date (Month-Day)")
 plt.ylabel("Median NDVI")
-plt.title("NDVI Time Series (Apr → Mar) — Whole Kanha")
+plt.title("NDVI Time Series (Apr → Mar) — Kanha North West")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
