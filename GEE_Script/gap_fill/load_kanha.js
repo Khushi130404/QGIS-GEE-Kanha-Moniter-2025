@@ -29,6 +29,8 @@ var climatology = ee.ImageCollection(
   })
 );
 
+
+
 /***************************************
  * TARGET DATE STRINGS (5,15,25)
  ***************************************/
@@ -53,7 +55,7 @@ dateStrings.evaluate(function (list) {
     Export.image.toDrive({
       image: image,
       description: "NDVI_GapFilled_" + dateStr,
-      folder: "GEE_NDVI_2025",
+      folder: "GEE_NDVI_GAP_2025",
       fileNamePrefix: "NDVI_GapFilled_" + dateStr,
       region: kanha,
       scale: 30,
