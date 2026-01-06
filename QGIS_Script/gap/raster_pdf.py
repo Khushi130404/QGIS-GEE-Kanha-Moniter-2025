@@ -6,7 +6,7 @@ from qgis.core import (QgsProject, QgsLayout, QgsLayoutItemMap,
 from PyQt5.QtGui import QFont
 
 # --- CONFIGURATION ---
-output_path = "D:/QGIS_GEE_Kanha_Moniter_2025/image/RasterLayersMask2.pdf"
+output_path = "D:/QGIS_GEE_Kanha_Moniter_2025/image/RasterLayersGap.pdf"
 date_pattern = r"(\d{4})_(\d{2})_(\d{2})"
 # ---------------------
 
