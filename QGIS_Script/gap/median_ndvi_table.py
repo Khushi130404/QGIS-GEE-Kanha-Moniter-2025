@@ -9,12 +9,12 @@ from PyQt5.QtCore import QVariant
 # ------------------------
 # USER INPUT
 # ------------------------
-folder = r"D:\QGIS_GEE_Kanha_Moniter_2025\GEE_GeoPackage\GEE_NDVI_2025_Mask2"
+folder = r"D:\QGIS_GEE_Kanha_Moniter_2025\GEE_GeoPackage\GEE_NDVI_2025_Gap_Fill"
 
 # ------------------------
 # CREATE MEMORY LAYER
 # ------------------------
-layer = QgsVectorLayer("None", "NDVI_2025_Table", "memory")
+layer = QgsVectorLayer("None", "Kanha_Gap_TimeSeries_ROI", "memory")
 pr = layer.dataProvider()
 
 pr.addAttributes([
